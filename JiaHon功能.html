@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏭 包裝材料報價系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(34, 139, 34, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #1b5e20;
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 60px 40px;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .function-card {
+            background: #f1f8e9;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            border: 3px solid #c8e6c9;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .function-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .function-card:hover::before {
+            left: 100%;
+        }
+
+        .function-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(34, 139, 34, 0.2);
+            border-color: #388e3c;
+        }
+
+        .function-card .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .function-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1b5e20;
+            margin-bottom: 15px;
+        }
+
+        .function-card p {
+            color: #2e7d32;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .function-card .features {
+            list-style: none;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #388e3c;
+        }
+
+        .function-card .features li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .function-card .features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .intro-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .intro-section h2 {
+            font-size: 2rem;
+            color: #1b5e20;
+            margin-bottom: 15px;
+        }
+
+        .intro-section p {
+            font-size: 1.1rem;
+            color: #2e7d32;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .functions-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .function-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏭 包裝材料報價系統</h1>
+            <p>專業的物流包裝解決方案報價平台</p>
+        </div>
+
+        <div class="content">
+            <div class="intro-section">
+                <h2>選擇報價功能</h2>
+                <p>我們提供多種包裝材料的專業報價計算服務，請選擇您需要的功能進行報價計算</p>
+            </div>
+
+            <div class="functions-grid">
+                <a href="嘉鴻功能網頁/functions/turnover/index.html" class="function-card">
+                    <span class="icon">📦</span>
+                    <h3>周轉箱及棧板報價</h3>
+                    <p>專業的周轉箱及棧板報價計算，支援多種CBM區間定價</p>
+                    <ul class="features">
+
+                    </ul>
+                </a>
+
+                <a href="嘉鴻功能網頁/functions/corrugated/index.html" class="function-card">
+                    <span class="icon">📋</span>
+                    <h3>瓦楞板報價</h3>
+                    <p>瓦楞板專業報價系統，最少訂購量20個起訂</p>
+                    <ul class="features">
+
+                    </ul>
+                </a>
+
+                <a href="嘉鴻功能網頁/functions/foam/index.html" class="function-card">
+                    <span class="icon">🧽</span>
+                    <h3>EVA泡棉報價</h3>
+                    <p>EVA泡棉專業報價，支援海運與貨櫃運費計算</p>
+                    <ul class="features">
+  
+                    </ul>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 添加點擊動畫效果
+        document.querySelectorAll('.function-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // 創建漣漪效果
+                const ripple = document.createElement('div');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(56, 142, 60, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+        
+        // 添加CSS動畫
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

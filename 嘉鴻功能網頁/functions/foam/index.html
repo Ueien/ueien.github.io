@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧽 EVA泡棉報價計算器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧽 EVA泡棉報價計算器</h1>
+            <p>專業的EVA泡棉報價解決方案</p>
+            <a href="../../../JiaHon功能.html" class="back-btn">← 返回主頁</a>
+        </div>
+
+        <div class="content">
+            <!-- 運費設定區塊 -->
+            <div class="form-section">
+                <h2 class="section-title">🚢 運費設定</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="container-freight">貨櫃標準運費 (1 CBM，可包櫃費用)</label>
+                        <input type="number" id="container-freight" step="0.01" value="2000" placeholder="請輸入貨櫃運費">
+                    </div>
+                    <div class="form-group">
+                        <label for="sea-express-freight">海快標準運費 (1 CBM，未包櫃費用)</label>
+                        <input type="number" id="sea-express-freight" step="0.01" value="6000" placeholder="請輸入海快運費">
+                    </div>
+                </div>
+            </div>
+
+            <!-- EVA泡棉基本資訊區塊 -->
+            <div class="form-section">
+                <h2 class="section-title">🧽 EVA泡棉基本資訊</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="length">長度 (mm)</label>
+                        <input type="number" id="length" step="0.01" placeholder="請輸入長度">
+                    </div>
+                    <div class="form-group">
+                        <label for="width">寬度 (mm)</label>
+                        <input type="number" id="width" step="0.01" placeholder="請輸入寬度">
+                    </div>
+                    <div class="form-group">
+                        <label for="thickness">厚度 (mm)</label>
+                        <input type="number" id="thickness" step="0.01" placeholder="請輸入厚度">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity" id="quantity-label">片數</label>
+                        <input type="number" id="quantity" step="1" min="1" placeholder="請輸入片數">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成本資訊區塊 -->
+            <div class="form-section">
+                <h2 class="section-title">💰 成本資訊</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="unit-price">單價 (NT$/CBM, 預設： 23,235, 可調整範圍： 16,000~35,000)</label>
+                        <input type="number" id="unit-price" step="1" min="16000" max="35000" value="23235" placeholder="請輸入單價 (16000-35000)">
+                    </div>
+                    <div class="form-group">
+                        <label for="exchange-rate" id="exchange-rate-label">匯率(人民幣CNY，載入中...)</label>
+                        <input type="number" id="exchange-rate" step="0.01" placeholder="請輸入匯率">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 計算結果區塊 -->
+            <div class="result-section" id="result-section">
+                <h2 class="section-title">📈 計算結果</h2>
+                
+                <!-- 修改為緊湊版三等分佈局 -->
+                <div class="result-layout-compact">
+                    <!-- 輸入數據列 - 緊湊版 -->
+                    <div class="result-column compact">
+                        <h3>📝 輸入數據</h3>
+                        <div class="compact-grid">
+                            <div class="compact-item">
+                                <span class="compact-label">長度</span>
+                                <span class="compact-value" id="display-length">0 mm</span>
+                            </div>
+                            <div class="compact-item">
+                                <span class="compact-label">寬度</span>
+                                <span class="compact-value" id="display-width">0 mm</span>
+                            </div>
+                            <div class="compact-item">
+                                <span class="compact-label">厚度</span>
+                                <span class="compact-value" id="display-thickness">0 mm</span>
+                            </div>
+                            <div class="compact-item">
+                                <span class="compact-label">片數</span>
+                                <span class="compact-value" id="display-quantity">0</span>
+                            </div>
+                            <div class="compact-item">
+                                <span class="compact-label">單價</span>
+                                <span class="compact-value" id="display-unit-price">0</span>
+                            </div>
+                            <div class="compact-item">
+                                <span class="compact-label">匯率</span>
+                                <span class="compact-value" id="display-exchange-rate">0</span>
+                            </div>
+                            <div class="compact-item highlight">
+                                <span class="compact-label">台幣成本</span>
+                                <span class="compact-value" id="display-twd-cost">NT$ 0</span>
+                            </div>
+                            <div class="compact-item">
+                                <span class="compact-label">單個CBM</span>
+                                <span class="compact-value" id="display-cbm">0.0000000</span>
+                            </div>
+                            <div class="compact-item highlight">
+                                <span class="compact-label">總CBM</span>
+                                <span class="compact-value" id="display-total-cbm">0.0000000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CBM結果 - 同時顯示兩種結果 -->
+                    <div class="result-column">
+                        <!-- 8 CBM 內結果 -->
+                        <div class="cbm-result-block" id="cbm-under-8">
+                            <h3>🧮 8 CBM 內結果(未包櫃)</h3>
+                            <div class="result-item">
+                                <span class="result-label">MOQ (最低起訂量)</span>
+                                <span class="result-value" id="moq1">0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">單片報價</span>
+                                <span class="result-value" id="unit-sale-price1">0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">單片運費</span>
+                                <span class="result-value" id="unit-freight1">0</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 分隔線 -->
+                        <div class="cbm-separator"></div>
+                        
+                        <!-- 8 CBM 以上結果 -->
+                        <div class="cbm-result-block" id="cbm-over-8">
+                            <h3>🚢 8 CBM 以上結果(可包櫃)</h3>
+                            <div class="result-item">
+                                <span class="result-label">MOQ (最小可包櫃片數)</span>
+                                <span class="result-value" id="moq2">0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">單片報價</span>
+                                <span class="result-value" id="unit-sale-price2">0</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">單片運費</span>
+                                <span class="result-value" id="unit-freight2">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 最終報價列 -->
+                    <div class="result-column">
+                        <h3>🎯 最終報價</h3>
+                        
+                        <!-- 頁籤導航 -->
+                        <div class="quote-tabs">
+                            <div class="tab-button active" id="sea-tab" data-type="sea">
+                                <span class="tab-icon">🧮</span>
+                                <span class="tab-text">海快運費</span>
+                                <span class="tab-badge">未包櫃</span>
+                            </div>
+                            <div class="tab-button" id="container-tab" data-type="container">
+                                <span class="tab-icon">🚢</span>
+                                <span class="tab-text">貨櫃運費</span>
+                                <span class="tab-badge">可包櫃</span>
+                            </div>
+                        </div>
+
+                        <!-- 頁籤內容 -->
+                        <div class="tab-content">
+                            <!-- 海快運費內容 -->
+                            <div class="tab-panel active" id="sea-panel">
+                                <div class="final-quote-display">
+                                    <div class="quote-amount" id="sea-final-quote">NT$ 0</div>
+                                </div>
+                                <div class="quote-breakdown">
+                                    <div class="result-item">
+                                        <span class="result-label">單片報價</span>
+                                        <span class="result-value" id="sea-unit-quote">NT$ 0</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">單片運費</span>
+                                        <span class="result-value" id="sea-unit-freight">NT$ 0</span>
+                                    </div>
+                                </div>
+                                <div class="quote-formula" id="sea-quote-formula">海快運費 = 單片報價 + 單片運費</div>
+                            </div>
+
+                            <!-- 貨櫃運費內容 -->
+                            <div class="tab-panel" id="container-panel">
+                                <div class="final-quote-display">
+                                    <div class="quote-amount" id="container-final-quote">NT$ 0</div>
+                                </div>
+                                <div class="quote-breakdown">
+                                    <div class="result-item">
+                                        <span class="result-label">單片報價</span>
+                                        <span class="result-value" id="container-unit-quote">NT$ 0</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">單片運費</span>
+                                        <span class="result-value" id="container-unit-freight">NT$ 0</span>
+                                    </div>
+                                </div>
+                                <div class="quote-formula" id="container-quote-formula">貨櫃運費 = 單片報價 + 單片運費</div>
+                            </div>
+                        </div>
+
+                        <!-- 推薦提示 -->
+                        <div class="recommendation-tip" id="recommendation-tip">
+                            <span class="tip-icon">💡</span>
+                            <span class="tip-text" id="tip-text">根據您的片數推薦海快運費</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 計算按鈕 -->
+            <div class="action-section">
+                <button id="calculate-btn" class="calculate-btn">
+                    <span>🧮</span>
+                    立即計算報價
+                </button>
+                <button id="reset-btn" class="reset-btn">
+                    <span>🔄</span>
+                    重置所有欄位
+                </button>
+                <button id="download-btn" class="download-btn">
+                    <span>📥</span>
+                    下載Excel報表
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
