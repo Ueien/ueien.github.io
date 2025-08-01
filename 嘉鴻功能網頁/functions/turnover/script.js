@@ -116,6 +116,7 @@ class TurnoverCalculator {
             const pricingTier = this.getTurnoverPricingTier(totalCbm, singleCbm);
             const shippingCost = this.calculateTurnoverShipping(singleCbm, values.cbmPrice);
             const unitPrice = Math.round(twdCost * pricingTier.multiplier + shippingCost);
+            const unitWithFreight = unitPrice + shippingCost;
             const totalPrice = unitPrice * values.quantity;
             
             // 更新顯示
@@ -127,6 +128,7 @@ class TurnoverCalculator {
                 pricingTier,
                 shippingCost,
                 unitPrice,
+                unitWithFreight,
                 totalPrice
             });
             
