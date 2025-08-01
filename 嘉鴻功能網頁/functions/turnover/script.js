@@ -218,11 +218,15 @@ class TurnoverCalculator {
     updateResults({ values, twdCost, singleCbm, totalCbm, pricingTier, shippingCost, unitPrice, totalPrice }) {
         console.log('開始更新顯示結果...');
         
+        // 計算單個報價+運費
+        const unitWithFreight = unitPrice + shippingCost;
+
         document.getElementById('twd-cost').textContent = `NT$ ${Math.round(twdCost).toLocaleString()}`;
         document.getElementById('single-cbm').textContent = `${singleCbm.toFixed(3)} CBM`;
         document.getElementById('total-cbm').textContent = `${totalCbm.toFixed(2)} CBM`;
         document.getElementById('freight-cost').textContent = `NT$ ${Math.round(shippingCost)}`;
         document.getElementById('unit-price').textContent = `NT$ ${Math.round(unitPrice).toLocaleString()}`;
+        document.getElementById('unit-freight-price').textContent = `NT$ ${Math.round(unitWithFreight).toLocaleString()}`;
         document.getElementById('total-price').textContent = `NT$ ${Math.round(totalPrice).toLocaleString()}`;
         document.getElementById('quote-tier').textContent = `數量區間：${pricingTier.quantityRange}`;
         document.getElementById('quote-formula').textContent = 
@@ -240,6 +244,7 @@ class TurnoverCalculator {
         document.getElementById('total-cbm').textContent = '0.00 CBM';
         document.getElementById('freight-cost').textContent = 'NT$ 0';
         document.getElementById('unit-price').textContent = 'NT$ 0';
+        document.getElementById('unit-freight-price').textContent = 'NT$ 0';
         document.getElementById('total-price').textContent = 'NT$ 0';
         document.getElementById('quote-tier').textContent = '數量區間：待計算';
         document.getElementById('final-quote').textContent = 'NT$ 0';
