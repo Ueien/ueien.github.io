@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>貨品確認清單系統 - 嘉鴻精密</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 標題區域 -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <svg class="logo-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                    </svg>
+                    <h1>貨品確認清單系統</h1>
+                </div>
+                <div class="subtitle">嘉鴻精密科技股份有限公司</div>
+            </div>
+        </header>
+
+        <!-- 主要功能區域 -->
+        <main class="main-content">
+            <!-- 檔案上傳區域 -->
+            <section class="upload-section">
+                <div class="upload-card">
+                    <div class="upload-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                    </div>
+                    <h3>上傳總表 Excel 檔案</h3>
+                    <p>請上傳包含完整貨品資訊的總表 Excel 檔案</p>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="excelFile" accept=".xlsx,.xls" class="file-input">
+                        <label for="excelFile" class="file-label">選擇檔案</label>
+                    </div>
+                    <div class="file-info" id="fileInfo" style="display: none;">
+                        <span class="file-name" id="fileName"></span>
+                        <span class="file-size" id="fileSize"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 進度指示器 -->
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">處理中...</div>
+            </div>
+
+            <!-- 預覽區域 -->
+            <section class="preview-section" id="previewSection" style="display: none;">
+                <div class="preview-header">
+                    <h3>資料預覽</h3>
+                    <div class="preview-actions">
+                        <div class="filename-input-group">
+                            <label for="outputFileName">檔案名稱:</label>
+                            <input type="text" id="outputFileName" placeholder="請輸入檔案名稱" value="貨品確認清單">
+                            <span class="file-extension">.xlsx</span>
+                        </div>
+                        <button class="btn btn-success" id="downloadBtn">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="btn-icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            下載 Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="preview-table" id="previewTable">
+                        <thead id="tableHeader"></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="summary-info" id="summaryInfo">
+                    <span class="summary-item">總計: <strong id="totalCount">0</strong> 筆資料</span>
+                    <span class="summary-item">處理時間: <strong id="processTime">0</strong> 秒</span>
+                </div>
+            </section>
+
+            <!-- 錯誤訊息區域 -->
+            <div class="error-container" id="errorContainer" style="display: none;">
+                <div class="error-content">
+                    <svg class="error-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <div>
+                        <h4>處理錯誤</h4>
+                        <p id="errorMessage">發生未知錯誤，請重新嘗試</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 使用說明 -->
+        <section class="instructions">
+            <details class="instructions-details">
+                <summary>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="summary-icon">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    使用說明
+                </summary>
+                <div class="instructions-content">
+                    <h4>功能說明</h4>
+                    <ul>
+                        <li>從總表 Excel 檔案中提取指定欄位資料</li>
+                        <li>生成包含「序號、廠商、貨名、箱規、數量(箱)、報關數量、包裝方式、物流號」的確認清單</li>
+                        <li>支援自訂輸出檔案名稱</li>
+                        <li>物流號欄位預設為空值，可後續手動填入</li>
+                    </ul>
+                    
+                    <h4>使用步驟</h4>
+                    <ol>
+                        <li>點擊「選擇檔案」按鈕上傳總表 Excel 檔案</li>
+                        <li>系統自動處理並顯示預覽資料</li>
+                        <li>確認資料無誤後，可修改檔案名稱</li>
+                        <li>點擊「下載 Excel」按鈕下載貨品確認清單</li>
+                    </ol>
+                    
+                    <h4>注意事項</h4>
+                    <ul>
+                        <li>請確保上傳的檔案為標準的總表格式</li>
+                        <li>系統會自動尋找包含「序號」、「廠商」等關鍵欄位的資料表</li>
+                        <li>生成的檔案格式為 .xlsx</li>
+                    </ul>
+                </div>
+            </details>
+        </section>
+
+        <!-- 返回按鈕 -->
+        <div class="back-button">
+            <a href="../index.html" class="btn btn-outline">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="btn-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                返回主頁
+            </a>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

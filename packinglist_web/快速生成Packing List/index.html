@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速生成 Packing List 系統</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- 導航欄 -->
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <a href="../index.html" class="flex items-center space-x-2 hover:text-blue-200 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                        <span>返回主頁</span>
+                    </a>
+                </div>
+                <h1 class="text-xl font-bold">快速生成 Packing List 系統</h1>
+                <div class="w-24"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- 頁面標題 -->
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">快速生成 Packing List 系統</h2>
+            <p class="text-gray-600">從已有總表檔案快速生成 Packing List 和 Invoice</p>
+        </div>
+
+        <!-- 主要功能區域 -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <!-- 總表上傳區域 -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    上傳總表檔案
+                </h3>
+                <div class="master-upload-section">
+                    <label class="block text-lg font-semibold mb-2 text-gray-700">
+                        <svg class="inline w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        選擇總表檔案
+                    </label>
+                    <p class="text-sm text-gray-600 mb-3">上傳之前生成的總表 Excel 檔案</p>
+                    <input type="file" id="masterListInput" accept=".xlsx" class="file-input">
+                    <div id="masterListStatus" class="mt-2 text-sm"></div>
+                    <div id="loadedMasterListInfo" class="mt-2 text-sm"></div>
+                </div>
+            </div>
+
+            <!-- 圖檔上傳區域 -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    上傳圖檔 (選填)
+                </h3>
+                <div class="image-upload-section">
+                    <label class="block text-lg font-semibold mb-2 text-gray-700">
+                        <svg class="inline w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        選擇圖片檔案
+                    </label>
+                    <p class="text-sm text-gray-600 mb-3">支援 JPG、PNG 格式，圖片將自動調整為 Excel 適用大小</p>
+                    <input type="file" id="imageInput" accept="image/*" class="file-input">
+                    <div id="imageStatus" class="mt-2 text-sm"></div>
+                    
+                    <!-- 圖片預覽區域 -->
+                    <div id="imagePreview" class="mt-4 hidden">
+                        <div class="image-preview-container">
+                            <p class="text-sm text-gray-600 mb-2">圖片預覽:</p>
+                            <div class="image-preview-wrapper">
+                                <img id="previewImg" src="" alt="圖片預覽" class="preview-image">
+                                <div class="image-info">
+                                    <p class="text-xs text-gray-500" id="imageInfo">等待處理...</p>
+                                </div>
+                            </div>
+                            <button type="button" id="removeImage" class="remove-image-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                移除圖片
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 總表資料預覽 -->
+            <div class="border-t pt-6 mb-8">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                    </svg>
+                    總表資料預覽
+                </h3>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div id="masterListPreview" class="master-list-container">
+                        <div class="text-center py-8 text-gray-500">
+                            <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 12l2 2 4-4"/>
+                            </svg>
+                            <p class="text-lg">請先上傳總表檔案</p>
+                            <p class="text-sm mt-2">上傳之前生成的總表 Excel 檔案以預覽資料</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 日期設定區域 -->
+            <div class="border-t pt-6 mb-6">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    日期設定
+                </h3>
+                <div class="input-group">
+                    <label class="block font-medium mb-1 text-gray-700">出貨日期:</label>
+                    <input type="date" id="quickShippingDate" class="form-input" value="">
+                    <p class="text-sm text-gray-500 mt-1">用於工作表命名和發票生成</p>
+                </div>
+            </div>
+
+            <!-- 貿易條件設定區域 -->
+            <div class="border-t pt-6 mb-6">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    貿易條件設定
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 交易條件 -->
+                    <div class="input-group">
+                        <label class="block font-medium mb-1 text-gray-700">交易條件:</label>
+                        <select id="tradeTerms" class="form-input">
+                            <option value="FOB">FOB</option>
+                            <option value="CIF">CIF</option>
+                        </select>
+                        <p class="text-sm text-gray-500 mt-1">選擇貿易條件</p>
+                    </div>
+                    
+                    <!-- 港口 -->
+                    <div class="input-group">
+                        <label class="block font-medium mb-1 text-gray-700">港口:</label>
+                        <select id="portSelection" class="form-input">
+                            <option value="基隆">基隆</option>
+                            <option value="臺中" selected>臺中</option>
+                            <option value="高雄">高雄</option>
+                        </select>
+                        <p class="text-sm text-gray-500 mt-1">選擇出貨港口</p>
+                    </div>
+                </div>
+                
+                <!-- 地址設定 -->
+                <div class="mt-6">
+                    <label class="block font-medium mb-3 text-gray-700">地址設定:</label>
+                    <div class="space-y-4">
+                        <div class="address-item">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-600">地址一:</span>
+                                <select class="address-select form-input w-32">
+                                    <option value="嘉鴻" selected>嘉鴻</option>
+                                    <option value="桃園">桃園</option>
+                                    <option value="新竹">新竹</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="address-item" id="address2Container" style="display: none;">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-600">地址二:</span>
+                                <div class="flex items-center gap-2">
+                                    <select class="address-select form-input w-32">
+                                        <option value="嘉鴻">嘉鴻</option>
+                                        <option value="桃園">桃園</option>
+                                        <option value="新竹">新竹</option>
+                                    </select>
+                                    <button type="button" class="remove-address text-red-500 hover:text-red-700">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="address-item" id="address3Container" style="display: none;">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-600">地址三:</span>
+                                <div class="flex items-center gap-2">
+                                    <select class="address-select form-input w-32">
+                                        <option value="嘉鴻">嘉鴻</option>
+                                        <option value="桃園">桃園</option>
+                                        <option value="新竹">新竹</option>
+                                    </select>
+                                    <button type="button" class="remove-address text-red-500 hover:text-red-700">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 添加地址按鈕 -->
+                        <div class="flex gap-2">
+                            <button type="button" id="addAddress2" class="btn-add-address">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
+                                添加地址二
+                            </button>
+                            <button type="button" id="addAddress3" class="btn-add-address" style="display: none;">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
+                                添加地址三
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">最多可選擇三個地址</p>
+                </div>
+            </div>
+
+            <!-- 檔名輸入區域 -->
+            <div class="border-t pt-6 mb-6">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                    檔案設定
+                </h3>
+                <div class="input-group">
+                    <label class="block font-medium mb-1 text-gray-700">檔案名稱:</label>
+                    <input type="text" id="quickFileName" class="form-input" placeholder="請輸入檔案名稱 (不需要 .xlsx 副檔名)" value="PackingList">
+                    <p class="text-sm text-gray-500 mt-1">檔案將自動加上日期和 .xlsx 副檔名</p>
+                </div>
+            </div>
+
+            <!-- 快速生成按鈕 -->
+            <div class="border-t pt-6 flex gap-4 justify-center">
+                <button id="quickPreviewPacking" class="btn btn-secondary" disabled>
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    預覽 Packing List
+                </button>
+                <button id="quickGeneratePacking" class="btn btn-primary" disabled>
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    快速生成 Packing List
+                </button>
+            </div>
+        </div>
+
+        <!-- 預覽模態框 -->
+        <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-lg max-w-6xl max-h-[90vh] overflow-auto shadow-2xl">
+                    <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                        <h3 class="text-xl font-semibold text-gray-800">Packing List 預覽</h3>
+                        <button id="closePreview" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                    </div>
+                    <div id="previewContent" class="p-6 overflow-auto"></div>
+                    <div class="sticky bottom-0 bg-gray-50 px-6 py-4 border-t flex justify-end gap-4">
+                        <button id="closePreviewBottom" class="btn btn-secondary">關閉預覽</button>
+                        <button id="generateFromPreview" class="btn btn-primary">確認生成</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 訊息顯示 -->
+        <div id="message" class="mt-4 p-3 rounded hidden"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
