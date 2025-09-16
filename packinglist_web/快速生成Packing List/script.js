@@ -60,7 +60,64 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ===== 數值處理函數 =====
-    
+
+    // 格式化稅率 - 確保0能正確顯示
+    function formatTaxRate(value) {
+        if (value === null || value === undefined || value === '') {
+            return '0.0%';
+        }
+
+        // 如果是數字
+        if (typeof value === 'number') {
+            // 如果是小數(如0.05)，轉換為百分比
+            if (value >= 0 && value <= 1) {
+                return (value * 100).toFixed(1) + '%';
+            }
+            // 如果已經是百分比數值(如5)
+            return value.toFixed(1) + '%';
+        }
+
+        // 如果是字串
+        if (typeof value === 'string') {
+            // 移除空格
+            const trimmed = value.trim();
+
+            // 如果已經包含%符號
+            if (trimmed.includes('%')) {
+                const numPart = parseFloat(trimmed.replace('%', ''));
+                return isNaN(numPart) ? '0.0%' : numPart.toFixed(1) + '%';
+            }
+
+            // 純數字字串
+            const numValue = parseFloat(trimmed);
+            if (!isNaN(numValue)) {
+                // 如果是小數(如0.05)，轉換為百分比
+                if (numValue >= 0 && numValue <= 1) {
+                    return (numValue * 100).toFixed(1) + '%';
+                }
+                // 如果已經是百分比數值(如5)
+                return numValue.toFixed(1) + '%';
+            }
+
+            // 如果無法解析，檢查是否為0
+            if (trimmed === '0' || trimmed === '0%') {
+                return '0.0%';
+            }
+        }
+
+        // 其他情況，嘗試轉換
+        const converted = parseFloat(value);
+        if (!isNaN(converted)) {
+            if (converted >= 0 && converted <= 1) {
+                return (converted * 100).toFixed(1) + '%';
+            }
+            return converted.toFixed(1) + '%';
+        }
+
+        // 完全無法解析時，返回預設值
+        return '0.0%';
+    }
+
     // 安全地獲取單元格數值 - 特別處理箱規等文本資料
     function getCellValue(cell, isTextColumn = false) {
         if (!cell || cell.value === undefined || cell.value === null) {
@@ -542,7 +599,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     '材質': getCellValue(row.getCell(18), true) || '',
                     '用途': getCellValue(row.getCell(19), true) || '',
                     '稅則編碼': getCellValue(row.getCell(20), true) || '',
-                    '稅率(%)': getCellValue(row.getCell(21), true) || '',
+                    '稅率(%)': formatTaxRate(getCellValue(row.getCell(21))),
                     '麥頭名稱備註': getCellValue(row.getCell(22), true) || '',
                     '¥採購單價(外部)': getCellValue(row.getCell(23)) || 0,
                     '¥採購單價(內部)': getCellValue(row.getCell(25)) || 0,
