@@ -124,7 +124,6 @@
         }
 
         .function-card .features li::before {
-            content: '✓';
             position: absolute;
             left: 0;
             color: #2e7d32;
@@ -148,6 +147,29 @@
             max-width: 800px;
             margin: 0 auto;
             line-height: 1.6;
+        }
+
+        .header {
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
         }
 
         @media (max-width: 768px) {
@@ -178,6 +200,7 @@
 <body>
     <div class="container">
         <div class="header">
+            <a href="../index.html" class="back-btn">← 返回主頁</a>
             <h1>🏭 包裝材料報價系統</h1>
             <p>專業的物流包裝解決方案報價平台</p>
         </div>
@@ -212,7 +235,15 @@
                     <h3>EVA泡棉報價</h3>
                     <p>EVA泡棉專業報價，支援海運與貨櫃運費計算</p>
                     <ul class="features">
-  
+
+                    </ul>
+                </a>
+
+                <a href="嘉鴻功能網頁/functions/pe_foam/index.html" class="function-card">
+                    <span class="icon">🔵</span>
+                    <h3>PE泡棉報價</h3>
+                    <p>PE泡棉專業報價，支援片材與圓形兩種計算模式</p>
+                    <ul class="features">
                     </ul>
                 </a>
             </div>

@@ -32,6 +32,7 @@
             text-align: center;
             margin-bottom: 4rem;
             color: white;
+            position: relative;
         }
 
         .logo {
@@ -254,6 +255,27 @@
             font-size: 0.95rem;
         }
 
+        /* 返回按鈕 */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+
         /* 頁腳 */
         .footer {
             text-align: center;
@@ -321,6 +343,7 @@
     <div class="container">
         <!-- 頂部區域 -->
         <header class="header">
+            <a href="../index.html" class="back-btn">← 返回主頁</a>
             <div class="logo">
                 <svg fill="currentColor" viewBox="0 0 20 20">
                     <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔵 PE泡棉報價計算器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔵 PE泡棉報價計算器</h1>
+            <p>專業的PE泡棉報價解決方案</p>
+            <a href="../../../index.html" class="back-btn">← 返回主頁</a>
+        </div>
+
+        <div class="content">
+            <!-- 計算模式切換 -->
+            <div class="form-section">
+                <h2 class="section-title">📐 計算模式</h2>
+                <div class="mode-switch">
+                    <input type="radio" id="sheet-mode" name="calc-mode" value="sheet" checked>
+                    <label for="sheet-mode" class="mode-label">
+                        <span class="mode-icon">📄</span>
+                        <span class="mode-text">片材計算</span>
+                    </label>
+
+                    <input type="radio" id="round-mode" name="calc-mode" value="round">
+                    <label for="round-mode" class="mode-label">
+                        <span class="mode-icon">⭕</span>
+                        <span class="mode-text">圓形泡棉</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 多筆資料輸入區塊 -->
+            <div class="form-section">
+                <h2 class="section-title">📋 批量輸入資料</h2>
+                <div class="input-controls">
+                    <button type="button" id="add-row-btn" class="control-btn add-btn">
+                        <span>➕</span> 新增一行
+                    </button>
+                    <button type="button" id="clear-all-btn" class="control-btn clear-btn">
+                        <span>🗑️</span> 清空全部
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table id="data-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>操作</th>
+                                <th>厚度 t </th>
+                                <th>寬度 W </th>
+                                <th>長度 L </th>
+                                <th>人民幣成本</th>
+                                <th>需求量</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-table-body">
+                            <tr class="data-row">
+                                <td>
+                                    <button type="button" class="delete-row-btn">❌</button>
+                                </td>
+                                <td>
+                                    <input type="number" class="thickness-input" step="1" min="1" placeholder="0">
+                                </td>
+                                <td>
+                                    <input type="number" class="width-input" step="1" min="1" placeholder="0">
+                                </td>
+                                <td>
+                                    <input type="number" class="length-input" step="1" min="1" placeholder="0">
+                                </td>
+                                <td>
+                                    <input type="number" class="rmb-cost-input" step="0.1" min="0" placeholder="0.0">
+                                </td>
+                                <td>
+                                    <input type="number" class="quantity-input" step="1" min="1" placeholder="0">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 計算按鈕 -->
+            <div class="calculate-section">
+                <button id="calculate-btn" class="calculate-btn">
+                    <span class="btn-icon">🧮</span>
+                    批量計算
+                </button>
+                <button id="reset-btn" class="reset-btn">
+                    <span class="btn-icon">🔄</span>
+                    重置數據
+                </button>
+                <button id="export-excel-btn" class="excel-btn" style="display: none;">
+                    <span class="btn-icon">📄</span>
+                    下載Excel
+                </button>
+            </div>
+
+            <!-- 計算結果顯示 -->
+            <div id="result-section" class="result-section" style="display: none;">
+                <h2 class="section-title">📊 批量計算結果</h2>
+                <div class="result-table-container">
+                    <table id="result-table" class="result-table">
+                        <thead>
+                            <tr>
+                                <th>編號</th>
+                                <th>厚度(t)</th>
+                                <th>寬度(W)</th>
+                                <th>長度(L)</th>
+                                <th>體積</th>
+                                <th class="highlight-col">人民幣成本</th>
+                                <th>倍數</th>
+                                <th class="highlight-col">運費(NTD)</th>
+                                <th class="highlight-col">單個售價(NTD)</th>
+                                <th>需求量</th>
+                                <th class="total-col">總價(NTD)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="result-table-body">
+                            <!-- 動態生成的結果列 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 總計資訊 -->
+                <div class="summary-section">
+                    <div class="summary-item">
+                        <span class="summary-label">總項目數：</span>
+                        <span id="total-items" class="summary-value">0</span>
+                    </div>
+                    <div class="summary-item total-amount">
+                        <span class="summary-label">總金額：</span>
+                        <span id="grand-total" class="summary-value">0 NTD</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加 SheetJS 庫以支援 Excel 下載 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

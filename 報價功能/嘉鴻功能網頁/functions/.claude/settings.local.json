@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start index.html)",
+      "Read(//d/OMI/報價功能/嘉鴻報價功能網頁/ueien.github.io/packinglist_web/**)",
+      "Read(//d/OMI/報價功能/嘉鴻報價功能網頁/ueien.github.io/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
